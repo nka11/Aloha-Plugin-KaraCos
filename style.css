@@ -1,0 +1,21 @@
+.karacos_file_image .x-tree-node-icon{
+	background-image:url(images/page_colors.gif);
+}
+.karacos_file_domain .x-tree-node-icon{
+	background-image:url(images/icon_home.gif);
+}
+.karacos_explorer_Resource .x-tree-node-icon{
+	background-image:url(images/page_html.gif);
+}
+
+.karacos_explorer_Manager .x-tree-node-icon{
+	background-image:url(images/page_settings.gif);
+}
+
+.karacos_explorer_AuthManager .x-tree-node-icon{
+	background-image:url(images/icon_user.gif);
+}
+
+.karacos_explorer_WebNode .x-tree-node-icon{
+	background-image:url(images/folder_page.gif);
+}

@@ -6,6 +6,13 @@ if(typeof KaraCos=="undefined"||!KaraCos)
 	alert('org.karacos.aloha.Img plugin is required');
     }
 KaraCos.Plugin=new GENTICS.Aloha.Plugin("org.karacos.aloha.Plugin");
+
+if (typeof KaraCos_mode != "undefined" ||KaraCos_mode) {
+	if (KaraCos_mode != 'karacos_prod') {
+		eu.iksproject.LoaderPlugin.loadAsset('org.karacos.aloha.Plugin', 'explorer', 'js');
+	}
+}
+eu.iksproject.LoaderPlugin.loadAsset('org.karacos.aloha.Plugin', 'style', 'css');
 KaraCos.Plugin.languages=["en","fr"];
 KaraCos.Plugin.config = ['img'];
 /*
@@ -20,6 +27,13 @@ KaraCos.Plugin.init=function(){
 	if (that.settings['instance_url'] == undefined) {
 		that.settings['instance_url'] = '';
 	}
+	
+	GENTICS.Aloha.Ribbon.addButton(
+		new GENTICS.Aloha.ui.Button({label:"EXPLORER",
+			onclick:function(){
+			KaraCos.Explorer.DomainExplorer.show(this);
+		}})
+	);
 	url_href = that.settings['instance_url'] + "/get_user_actions_forms";
 	$.ajax({ url: url_href,
     	dataType: "json",
