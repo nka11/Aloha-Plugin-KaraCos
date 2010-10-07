@@ -31,7 +31,7 @@ KaraCos.Plugin.init=function(){
 	GENTICS.Aloha.Ribbon.addButton(
 		new GENTICS.Aloha.ui.Button({label:"EXPLORER",
 			onclick:function(){
-			KaraCos.Explorer.DomainExplorer.show(this);
+			KaraCos.Explorer.domainExplorer.show(this);
 		}})
 	);
 	url_href = that.settings['instance_url'] + "/get_user_actions_forms";
