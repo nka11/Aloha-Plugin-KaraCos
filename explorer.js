@@ -47,6 +47,8 @@ KaraCos.Explorer.getNodeItems = function(url) {
 					item = {text: k,
 							id: t_url,
 							cls : 'karacos_explorer_' + v.webType,
+							parent_url:url,
+							imgsrc:'' + GENTICS_Aloha_base + 'plugins/org.karacos.aloha.Plugin/images/type_' + v.webType + '.png',
 					};
 					items.push(item);
 				});
@@ -60,16 +62,30 @@ KaraCos.Explorer.getNodeItems = function(url) {
 		    	async: false, // plugin init should wait for success b4 continuing
 		        success: function(data) {
 					jQuery.each(data.form.fields[0].values, function(id,value) {
-						item = {text: value.label,leaf:true};
+						t_url = "/";
+						if (url != '/') {
+							t_url = url + '/' + value.value;
+						} else {
+							t_url = '/' + value.value;
+						}
+						item = {id: t_url,
+								text: value.label,
+								leaf:true,
+								parent_url:url};
 						var imgreg = /.*\.(jpg)|(gif)|(jpeg)|(png)$/;
 						var match = value.value.toLowerCase().match(imgreg);
 						if ( match != null) {
 							item.cls = 'karacos_file_image';
+							item.imgsrc = t_url;
 						}
 						var sndreg = /.*\.(mp3)|(ogg)|(m4a)|(aac)$/;
 						var match = value.value.toLowerCase().match(sndreg);
 						if ( match != null) {
 							item.cls = 'karacos_file_sound';
+							item.imgsrc = '' + GENTICS_Aloha_base + 'plugins/org.karacos.aloha.Plugin/images/type_AudioTrack.png';
+						}
+						if (!item.imgsrc) {
+							item.imgsrc = '' + GENTICS_Aloha_base + 'plugins/org.karacos.aloha.Plugin/images/page_package.gif';
 						}
 						items.push(item);
 					});
@@ -208,11 +224,33 @@ Ext.extend(KaraCos.Explorer.DomainTree, Ext.tree.TreePanel, {
  */
 KaraCos.Explorer.ItemTabPanel = function(config) {
 	Ext.apply(this, config);
-	KaraCos.Explorer.ItemTabPanel.superclass.constructor.call(this);
 	this.contentElementsStore = new Ext.data.JsonStore({
-        fields: ['id','Text']
+        fields: ['id','text','imgsrc']
 
 	});
+	var tpl = new Ext.XTemplate(
+		    '<tpl for=".">',
+		        '<div class="thumb-wrap">',
+		        '<div class="thumb"><img src="{imgsrc}" style="width:64px;height:64px" title="{text}"></div>',
+		        '<span class="x-editable">{text}</span></div>',
+		    '</tpl>',
+		    '<div class="x-clear"></div>'
+		);
+
+	this.ContentGrid = new Ext.DataView({
+        store: this.contentElementsStore,
+        tpl: tpl,
+        autoHeight:true,
+        multiSelect: true,
+        overClass:'x-view-over',
+        itemSelector:'div.thumb-wrap',
+        title:'Node content',
+        emptyText: 'No images to display'
+    });
+	
+	this.items = [this.ContentGrid];
+	KaraCos.Explorer.ItemTabPanel.superclass.constructor.call(this);
+	
 };
 Ext.extend(KaraCos.Explorer.ItemTabPanel, Ext.TabPanel, {
 });
@@ -223,7 +261,7 @@ Ext.extend(KaraCos.Explorer.ItemTabPanel, Ext.TabPanel, {
  */
 KaraCos.Explorer.DomainExplorer = function(config) {
 	Ext.apply(this, config);
-	this.tree = new KaraCos.Explorer.DomainTree({
+	this.treePanel = new KaraCos.Explorer.DomainTree({
 		title: 'Navigation',
 	    region: 'west',
 	    animate:true, 
@@ -238,27 +276,15 @@ KaraCos.Explorer.DomainExplorer = function(config) {
 	});
 	console.log(this);
 	
-	this.tree.on('nodeselected',this.onTreeSelection, this);
-	
+	this.treePanel.on('nodeselected',this.onTreeSelection, this);
+	 
 	this.tabPanel = new KaraCos.Explorer.ItemTabPanel({
 		region: 'center',
 		margins:'3 3 3 0', 
 		activeTab: 0,
 		defaults:{autoScroll:true},
-		
-		items:[{
-			title: 'Bogus Tab',
-			html: ''
-		},{
-			title: 'Another Tab',
-			html: ''
-		},{
-			title: 'Closable Tab',
-			html: '',
-			closable:true
-		}]
 	});
-	this.items = [this.tree,this.tabPanel];
+	this.items = [this.treePanel,this.tabPanel];
 	KaraCos.Explorer.DomainExplorer.superclass.constructor.call(this);
 };
 
@@ -267,11 +293,13 @@ Ext.extend(KaraCos.Explorer.DomainExplorer, Ext.Window, {
 		console.log("On selection change");
 		console.log(this);
 		items = KaraCos.Explorer.getNodeItems(node.id);
+		
 		jQuery.each(items, function(k,v) {
-			//items[k].parent = node.selNode.id
+			//items[k].parent = this.tree.selModel.selNode.id
 		})
 		console.log(items);
-		//this.tabPanel.contentElementsStore.loadData
+		//this.contentElementsStore
+		this.tabPanel.contentElementsStore.loadData(items);
 	},
 });
 KaraCos.Explorer.domainExplorer = new KaraCos.Explorer.DomainExplorer({
