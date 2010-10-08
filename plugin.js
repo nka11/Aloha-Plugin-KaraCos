@@ -3,15 +3,14 @@
 */
 if(typeof KaraCos=="undefined"||!KaraCos)
     {
-	alert('org.karacos.aloha.Img plugin is required');
+	alert('KaraCos must be loaded');
     }
 KaraCos.Plugin=new GENTICS.Aloha.Plugin("org.karacos.aloha.Plugin");
-
-if (typeof KaraCos_mode != "undefined" ||KaraCos_mode) {
+/*if (typeof KaraCos_mode != "undefined" ||KaraCos_mode) {
 	if (KaraCos_mode != 'karacos_prod') {
 		eu.iksproject.LoaderPlugin.loadAsset('org.karacos.aloha.Plugin', 'explorer', 'js');
 	}
-}
+}*/
 eu.iksproject.LoaderPlugin.loadAsset('org.karacos.aloha.Plugin', 'style', 'css');
 KaraCos.Plugin.languages=["en","fr"];
 KaraCos.Plugin.config = ['img'];
@@ -29,7 +28,8 @@ KaraCos.Plugin.init=function(){
 	}
 	
 	GENTICS.Aloha.Ribbon.addButton(
-		new GENTICS.Aloha.ui.Button({label:"EXPLORER",
+		new GENTICS.Aloha.ui.Button({
+			'iconClass': 'GENTICS_button karacos_explorer_icon',
 			onclick:function(){
 			KaraCos.Explorer.domainExplorer.show(this);
 		}})
@@ -63,7 +63,8 @@ KaraCos.Plugin.init=function(){
 				if (that.rsdata.actions[i].action == "_att") {
 					that._att = that.rsdata.actions[i];
 				}
-				if (that.rsdata.actions[i].label) {
+				/* 
+				 * if (that.rsdata.actions[i].label) {
 					var actionButton=new GENTICS.Aloha.ui.Button({label:that.rsdata.actions[i].label,
 						onclick:function(){ // When a button is clicked :
 						if (this.actiondata.form && this.actiondata.action != 'register') {
@@ -78,7 +79,8 @@ KaraCos.Plugin.init=function(){
 					GENTICS.Aloha.Log.info(that,"processing action button creation " + that.rsdata.actions[i].label );
 					GENTICS.Aloha.Ribbon.addButton(actionButton);
 					// actionButton.show();
-				}
+				} 
+				*/
 			}
 			// GENTICS.Aloha.Ribbon.toolbar.render();
 			// GENTICS.Aloha.Ribbon.toolbar.show();
@@ -110,7 +112,7 @@ KaraCos.Plugin.init=function(){
 		} // if data.status == "success"
 	GENTICS.Aloha.Log.info(that,that);
 	//console.log(that);
-	// $.ajax
+	// $.ajax 
 	that.initImage();
 	that.bindInteractions();
 	that.subscribeEvents();
@@ -160,44 +162,10 @@ KaraCos.Plugin.initImage = function() {
 	    		3
 	    );
 	    that.imgChooseButton = new GENTICS.Aloha.ui.Button({
-	    	'label' : that.i18n('button.chooseimg.label'),
+	    	'iconClass': 'GENTICS_button karacos_explorer_icon',
 	    	'size' : 'small',
 	    	'onclick' : function () { 
-	    		$('#dialog_window').html("");
-	    		GENTICS.Aloha.FloatingMenu.obj.hide();
-	    		$('#dialog_window').append("<ul></ul>");
-	    		$('#dialog_window ul').css({'list-style':'none outside none',
-	    				'position':'relative',
-	    				'text-align':'left'});
-
-	    		url_href = that.settings['instance_url'] + "/_att";
-	    		thatbtn = this;
-	    		$.ajax({ url: url_href,
-	    	    	dataType: "json",
-	    	    	context: document.body,
-	    	    	async: false, // plugin init should wait for success b4 continuing
-	    	        success: function(data) {
-	    					thatbtn._att = data;
-	    					//console.log(data);
-	    				},// success on get_user_actions_forms
-	    		});
-	    		$.each(this._att.form.fields[0].values, function(id,value) {
-	    			$('#dialog_window ul').append('<li><img id="img'
-	    					+ id + '_img" class="imgselector" "src="' + value.value
-	    					+ '" style="width: 64px; height: 64px;"/></li>')
-	    		});
-	    		
-	    		$('#dialog_window ul li').css({'display':'block',
-	    			'position':'relative',
-	    			});
-	    		$(".imgselector").click(function() {
-	    			img = $(this);
-	    			that.targetImg.src = this.src;
-	    			$('#dialog_window').dialog('close');
-	    			GENTICS.Aloha.FloatingMenu.obj.show();
-	    		});
-	    		$('#dialog_window').dialog('open');
-	    		
+	    	KaraCos.Explorer.domainExplorer.show(this);
 	    },
 	    	'tooltip' : that.i18n('button.choose.tooltip'),
 	    	'toggle' : false
@@ -221,7 +189,6 @@ KaraCos.Plugin.subscribeEvents = function () {
 	
     // add the event handler for selection change
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'selectionChanged', function(event, rangeObject) {
-    	if (!that.tab_panel_width) that.tab_panel_width = GENTICS.Aloha.FloatingMenu.extTabPanel.getWidth();
     	if (that.add_attachment != null) {
 	    	var foundImgMarkup = KaraCos.Img.findImgMarkup( rangeObject );
 	        if ( foundImgMarkup != null ) {
@@ -231,15 +198,10 @@ KaraCos.Plugin.subscribeEvents = function () {
 //	        	that.targetImg = null;
 	        }
 	    	// TODO this should not be necessary here!
-	    	GENTICS.Aloha.FloatingMenu.doLayout();
+	        GENTICS.Aloha.FloatingMenu.doLayout();
+	        GENTICS.Aloha.FloatingMenu.obj.show();
     	}
-    	if ( GENTICS.Aloha.FloatingMenu.userActivatedTab == KaraCos.Img.i18n('floatingmenu.tab.img') ) {
-    		// extend tabPanel width for img tab
-    		GENTICS.Aloha.FloatingMenu.extTabPanel.setWidth(450);
-    	} else {
-    		GENTICS.Aloha.FloatingMenu.extTabPanel.setWidth(that.tab_panel_width);
-    		
-    	}
+    	
     });
     	
 	
