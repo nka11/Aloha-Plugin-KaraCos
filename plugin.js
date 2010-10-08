@@ -28,6 +28,12 @@ KaraCos.Plugin.init=function(){
 	}
 	
 	GENTICS.Aloha.Ribbon.addButton(
+			new GENTICS.Aloha.ui.Button({
+				'iconClass': 'GENTICS_button karacos_explorer_icon',
+				id: 'show-btn',
+				})
+		);
+	GENTICS.Aloha.Ribbon.addButton(
 		new GENTICS.Aloha.ui.Button({
 			'iconClass': 'GENTICS_button karacos_explorer_icon',
 			onclick:function(){
