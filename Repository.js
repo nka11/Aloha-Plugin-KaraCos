@@ -60,31 +60,6 @@ GENTICS.Aloha.Repositories.KaraCos.init = function() {
 		},
 	});
 	this.settings.data[0].parentId = '/';
-	// generate folder structure
-    /*
-     for (var i = 0; i < this.settings.data.length; i++) {
-    	
-    	var u = this.settings.data[i].uri = this.parseUri(this.settings.data[i].url);
-
-    	// add hostname as root folder 
-    	var path = this.addFolder('', u.host);
-
-    	var pathparts = u.path.split('/');
-    	for (j = 0; j < pathparts.length; j++) {
-    		if ( 
-    			pathparts[j] && 
-    			// It's a file because it has an extension.
-    			// Could improve this one :)
-    			pathparts[j].lastIndexOf('.') < 0
-    		) {
-	    		path = this.addFolder(path, pathparts[j]);
-    		}
-    	}
-    	this.settings.data[i].parentId = path;
-    }
-    * 
-     */
-    // repository name
     this.repositoryName = 'KaraCos';
 }
 
