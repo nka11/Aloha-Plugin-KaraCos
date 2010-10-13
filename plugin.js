@@ -188,40 +188,7 @@ KaraCos.Plugin.initImage = function() {
 KaraCos.Plugin.bindInteractions = function () {
     var that = this;
     
-    if(!document.body.BodyDragSinker){
-		document.body.BodyDragSinker = true;
-		//==================
-		// Attach drag and drop listeners to document body
-		// this prevents incorrect drops, reloading the page with the dropped item
-		var body = Ext.fly(document.body);
-		//$('body').get(0).addEventListener('drop', function(event){
-		//	console.log(event);
-		//	event.stopEvent();
-		//	return true;
-		//});
-		body.on({
-			dragenter:function(event){
-				return true;
-			}
-			,dragleave:function(event){
-				return true;
-			}
-			,dragover:function(event){
-				//console.log(event);
-				if (event.sink) {
-					event.stopEvent();
-				}
-				return true;
-			}
-			,drop:function(event){
-				console.log(event);
-				event.stopEvent();
-				if (event.sink) {
-				}
-				return true;
-			}
-		});
-	}
+    KaraCos.Explorer.sinkBodyEvents();
     
     // Block call pasted from http://source.sphene.net/wsvn/sphene/aloha/trunk/aloha-imageplugin/src/at.tapo.aloha.plugins.Image/plugin.js
     // to bind drop event....
@@ -246,7 +213,7 @@ KaraCos.Plugin.bindInteractions = function () {
                     GENTICS.Utils.Dom.insertIntoDOM(
                         img,
                         GENTICS.Aloha.Selection.getRangeObject(),
-                        jQuery(GENTICS.Aloha.activeEditable.obj));
+                        GENTICS.Aloha.activeEditable.obj);
                 };
                 reader.readAsDataURL(files[i]);
             }
