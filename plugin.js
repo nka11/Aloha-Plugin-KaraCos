@@ -33,17 +33,29 @@ KaraCos.Plugin.init=function(){
 				id: 'show-btn',
 				})
 		); */
-	GENTICS.Aloha.Ribbon.addButton(
-		new GENTICS.Aloha.ui.Button({
-			'iconClass': 'GENTICS_button karacos_explorer_icon',
-			onclick:function(){
-			if (this.isPressed()) {
-    			KaraCos.Explorer.domainExplorer.hide();
-    		} else {
-    			KaraCos.Explorer.domainExplorer.show(this);
-    		}
-		}})
-	);
+	KaraCos.Explorer.domainExplorer.explorer_button = new GENTICS.Aloha.ui.Button({
+		'iconClass': 'GENTICS_button karacos_explorer_icon',
+		'toggle' : true,
+		onclick:function(){
+		if (this.isPressed()) {
+			KaraCos.Explorer.domainExplorer.hidecmd = false;
+			KaraCos.Explorer.domainExplorer.hide();
+			KaraCos.Explorer.domainExplorer.hidecmd = true;
+		} else {
+			KaraCos.Explorer.domainExplorer.hidecmd = false;
+			KaraCos.Explorer.domainExplorer.show(this);
+			KaraCos.Explorer.domainExplorer.hidecmd = true;
+		}
+	}});
+	GENTICS.Aloha.Ribbon.addButton(KaraCos.Explorer.domainExplorer.explorer_button);
+	// When explorer is hidden, make the button clickable
+	KaraCos.Explorer.domainExplorer.on({
+		'hide': function(explorer) {
+			if (explorer.hidecmd && explorer.explorer_button.isPressed()) {
+				explorer.explorer_button.setPressed(false);
+			}
+			}
+	});
 	url_href = that.settings['instance_url'] + "/get_user_actions_forms";
 	$.ajax({ url: url_href,
     	dataType: "json",
@@ -171,7 +183,9 @@ KaraCos.Plugin.initImage = function() {
 	    		this.i18n('floatingmenu.tab.img'),
 	    		3
 	    );
-	    that.explorerButton = new GENTICS.Aloha.ui.Button({
+	    /*
+	     * 
+	     that.explorerButton = new GENTICS.Aloha.ui.Button({
 	    	'iconClass': 'GENTICS_button karacos_explorer_icon',
 	    	'size' : 'small',
 	    	'onclick' : function () { 
@@ -186,6 +200,7 @@ KaraCos.Plugin.initImage = function() {
 	    		this.i18n('floatingmenu.tab.img'),
 	    		3
 	    );
+	    */
 	}
 };
 
@@ -235,6 +250,7 @@ KaraCos.Plugin.subscribeEvents = function () {
 	
     // add the event handler for selection change
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'selectionChanged', function(event, rangeObject) {
+    	console.log(rangeObject);
     	if (that.add_attachment != null) {
 	    	var foundImgMarkup = KaraCos.Img.findImgMarkup( rangeObject );
 	        if ( foundImgMarkup != null ) {
@@ -243,6 +259,7 @@ KaraCos.Plugin.subscribeEvents = function () {
 	        } else {
 //	        	that.targetImg = null;
 	        }
+	        
 	    	// TODO this should not be necessary here!
 	        GENTICS.Aloha.FloatingMenu.doLayout();
 	        GENTICS.Aloha.FloatingMenu.obj.show();
@@ -278,9 +295,9 @@ KaraCos.Plugin.save=function(){
 	    var that = this;
 		jQuery.each(GENTICS.Aloha.editables,
 		            function(index,editable){
-				that.pagedata[config[editable.getId()]] = editable.getContents();
-		        content=content+"Editable ID: "+config[editable.getId()]+"\nHTML code: "+editable.getContents()+"\n\n";
-		        });
+						that.pagedata[config[editable.getId()]] = editable.getContents();
+				        content=content+"Editable ID: "+config[editable.getId()]+"\nHTML code: "+editable.getContents()+"\n\n";
+			        });
 		url = that.settings['instance_url'];
 		if (url == "") {
 			url = "/";
