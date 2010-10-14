@@ -27,17 +27,21 @@ KaraCos.Plugin.init=function(){
 		that.settings['instance_url'] = '';
 	}
 	
-	GENTICS.Aloha.Ribbon.addButton(
+	/*GENTICS.Aloha.Ribbon.addButton(
 			new GENTICS.Aloha.ui.Button({
 				'iconClass': 'GENTICS_button karacos_explorer_icon',
 				id: 'show-btn',
 				})
-		);
+		); */
 	GENTICS.Aloha.Ribbon.addButton(
 		new GENTICS.Aloha.ui.Button({
 			'iconClass': 'GENTICS_button karacos_explorer_icon',
 			onclick:function(){
-			KaraCos.Explorer.domainExplorer.show(this);
+			if (this.isPressed()) {
+    			KaraCos.Explorer.domainExplorer.hide();
+    		} else {
+    			KaraCos.Explorer.domainExplorer.show(this);
+    		}
 		}})
 	);
 	url_href = that.settings['instance_url'] + "/get_user_actions_forms";
@@ -167,18 +171,18 @@ KaraCos.Plugin.initImage = function() {
 	    		this.i18n('floatingmenu.tab.img'),
 	    		3
 	    );
-	    that.imgChooseButton = new GENTICS.Aloha.ui.Button({
+	    that.explorerButton = new GENTICS.Aloha.ui.Button({
 	    	'iconClass': 'GENTICS_button karacos_explorer_icon',
 	    	'size' : 'small',
 	    	'onclick' : function () { 
-	    	KaraCos.Explorer.domainExplorer.show(this);
-	    },
+		    	KaraCos.Explorer.domainExplorer.show(this);
+		    },
 	    	'tooltip' : that.i18n('button.choose.tooltip'),
-	    	'toggle' : false
+	    	'toggle' : true
 	    });
 	    GENTICS.Aloha.FloatingMenu.addButton(
 	    		KaraCos.Img.getUID('img'),
-	    		this.imgChooseButton,
+	    		this.explorerButton,
 	    		this.i18n('floatingmenu.tab.img'),
 	    		3
 	    );
@@ -203,7 +207,9 @@ KaraCos.Plugin.bindInteractions = function () {
             	event.sink = false;
                 return true;
             }
-            for (var i = 0 ; i < files.length ; i++) {
+            var len = files.length;
+            while(--len >= 0) {
+            	
                 //alert("testing " + files[i].name);
                 var reader = new FileReader();
                 reader.onloadend = function(readEvent) {
@@ -216,7 +222,7 @@ KaraCos.Plugin.bindInteractions = function () {
                         GENTICS.Aloha.activeEditable.obj);
                 };
                 reader.readAsDataURL(files[i]);
-            }
+            } //while
 
             return false;
         }, false);
