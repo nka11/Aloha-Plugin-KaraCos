@@ -53,8 +53,9 @@ KaraCos.Plugin.init=function(){
 		'hide': function(explorer) {
 			if (explorer.hidecmd && explorer.explorer_button.isPressed()) {
 				explorer.explorer_button.setPressed(false);
-			}
-			}
+				explorer.explorer_button.render();
+				}
+			} // on hide
 	});
 	url_href = that.settings['instance_url'] + "/get_user_actions_forms";
 	$.ajax({ url: url_href,
@@ -118,13 +119,15 @@ KaraCos.Plugin.init=function(){
 					}
 					that.pagedata[field.name] = fieldvalue;
 				}
-				var editMore=new GENTICS.Aloha.ui.Button({label:that.i18n("editMore"),
+				var editMore=new GENTICS.Aloha.ui.Button({
+					label:that.i18n("editMore"),
 					onclick:function(){that.editMore()}});
 				GENTICS.Aloha.Ribbon.addButton(editMore);
 				// editMore.show();
 				// GENTICS.Aloha.Ribbon.toolbar.render();
 				// GENTICS.Aloha.Ribbon.toolbar.show();
-				var saveButton=new GENTICS.Aloha.ui.Button({label:that.i18n("save"),
+				var saveButton=new GENTICS.Aloha.ui.Button({
+					label:that.i18n("save"),
 					onclick:function(){that.save()}});
 				GENTICS.Aloha.Ribbon.addButton(saveButton);
 				// saveButton.show();
@@ -135,81 +138,19 @@ KaraCos.Plugin.init=function(){
 	GENTICS.Aloha.Log.info(that,that);
 	//console.log(that);
 	// $.ajax 
-	that.initImage();
 	that.bindInteractions();
 	that.subscribeEvents();
    }; // END INIT
 
-KaraCos.Plugin.resourceObjectTypes = [];
+KaraCos.Plugin.objectTypeFilter = [];
 
-KaraCos.Plugin.initImage = function() {
-	var that = this;
-	
-	if (that.add_attachment != null) {
-	    that.imgUploadButton = new GENTICS.Aloha.ui.Button({
-	    	'label' : that.i18n('button.uploadimg.label'),
-	    	'size' : 'small',
-	    	'onclick' : function () { 
-	    		GENTICS.Aloha.FloatingMenu.obj.hide();
-	    		$.kc_write_kc_action(this.add_attachment,$('#dialog_window'));
-	    		$('#dialog_window input.field').fileUploader({
-	    			imageLoader: '',
-	    			buttonUpload: '#dialog_window input.button',
-	    			buttonClear: '#pxClear',
-	    			successOutput: 'File Uploaded',
-	    			errorOutput: 'Failed',
-	    			inputName: 'att_file',
-	    			inputSize: 30,
-	    			allowedExtension: 'jpg|jpeg|png|gif',
-	    			callback: function(data) {
-	    			$('#dialog_window').dialog('close');
-	    			//console.log(that.imgUploadButton.targetImg);
-	    			//console.log(data);
-	    			that.targetImg.src = data.data;
-	    			GENTICS.Aloha.FloatingMenu.obj.show();
-	    		}
-	    			});
-	    		$('#dialog_window').dialog('open');
-	    		
-	    },
-	    	'tooltip' : that.i18n('button.uploadimg.tooltip'),
-	    	'toggle' : false
-	    });
-	    that.imgUploadButton.add_attachment = that.add_attachment;
-	    //this.imgUploadButton.setResourceObjectTypes(KaraCos.Plugin.resourceObjectTypes);
-	    GENTICS.Aloha.FloatingMenu.addButton(
-	    		KaraCos.Img.getUID('img'),
-	    		this.imgUploadButton,
-	    		this.i18n('floatingmenu.tab.img'),
-	    		3
-	    );
-	    /*
-	     * 
-	     that.explorerButton = new GENTICS.Aloha.ui.Button({
-	    	'iconClass': 'GENTICS_button karacos_explorer_icon',
-	    	'size' : 'small',
-	    	'onclick' : function () { 
-		    	KaraCos.Explorer.domainExplorer.show(this);
-		    },
-	    	'tooltip' : that.i18n('button.choose.tooltip'),
-	    	'toggle' : true
-	    });
-	    GENTICS.Aloha.FloatingMenu.addButton(
-	    		KaraCos.Img.getUID('img'),
-	    		this.explorerButton,
-	    		this.i18n('floatingmenu.tab.img'),
-	    		3
-	    );
-	    */
-	}
-};
 
 KaraCos.Plugin.bindInteractions = function () {
     var that = this;
     
     KaraCos.Explorer.sinkBodyEvents();
     
-    // Block call pasted from http://source.sphene.net/wsvn/sphene/aloha/trunk/aloha-imageplugin/src/at.tapo.aloha.plugins.Image/plugin.js
+    // Block call partially pasted from http://source.sphene.net/wsvn/sphene/aloha/trunk/aloha-imageplugin/src/at.tapo.aloha.plugins.Image/plugin.js
     // to bind drop event....
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'editableCreated', function(event, editable) {
         editable.obj[0].addEventListener('drop', function(event){
@@ -250,7 +191,7 @@ KaraCos.Plugin.subscribeEvents = function () {
 	
     // add the event handler for selection change
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'selectionChanged', function(event, rangeObject) {
-    	console.log(rangeObject);
+    	//console.log(rangeObject);
     	if (that.add_attachment != null) {
 	    	var foundImgMarkup = KaraCos.Img.findImgMarkup( rangeObject );
 	        if ( foundImgMarkup != null ) {
@@ -317,7 +258,6 @@ KaraCos.Plugin.save=function(){
 	    },});
 		GENTICS.Aloha.Log.info(that,that);
 	} catch(error) {
-		console.log(error);
 		GENTICS.Aloha.Log.error(error);
 	}
   };
