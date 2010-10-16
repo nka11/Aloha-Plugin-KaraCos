@@ -35,17 +35,9 @@ KaraCos.Plugin.init=function(){
 		); */
 	KaraCos.Explorer.domainExplorer.explorer_button = new GENTICS.Aloha.ui.Button({
 		'iconClass': 'GENTICS_button karacos_explorer_icon',
-		'toggle' : true,
+		'toggle' : false,
 		onclick:function(){
-		if (this.isPressed()) {
-			KaraCos.Explorer.domainExplorer.hidecmd = false;
-			KaraCos.Explorer.domainExplorer.hide();
-			KaraCos.Explorer.domainExplorer.hidecmd = true;
-		} else {
-			KaraCos.Explorer.domainExplorer.hidecmd = false;
 			KaraCos.Explorer.domainExplorer.show(this);
-			KaraCos.Explorer.domainExplorer.hidecmd = true;
-		}
 	}});
 	GENTICS.Aloha.Ribbon.addButton(KaraCos.Explorer.domainExplorer.explorer_button);
 	// When explorer is hidden, make the button clickable
@@ -148,41 +140,6 @@ KaraCos.Plugin.objectTypeFilter = [];
 KaraCos.Plugin.bindInteractions = function () {
     var that = this;
     
-    KaraCos.Explorer.sinkBodyEvents();
-    
-    // Block call partially pasted from http://source.sphene.net/wsvn/sphene/aloha/trunk/aloha-imageplugin/src/at.tapo.aloha.plugins.Image/plugin.js
-    // to bind drop event....
-    GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'editableCreated', function(event, editable) {
-        editable.obj[0].addEventListener('drop', function(event){
-    		var e = event;
-            event.sink = true;
-            var files = e.dataTransfer.files;
-            var count = files.length;
-            // if no files where dropped, use default handler
-            if (count < 1) {
-            	event.sink = false;
-                return true;
-            }
-            var len = files.length;
-            while(--len >= 0) {
-            	
-                //alert("testing " + files[i].name);
-                var reader = new FileReader();
-                reader.onloadend = function(readEvent) {
-                    var img = jQuery('<img src="" alt="xyz" />');
-                    img.attr('src', readEvent.target.result);
-                    //GENTICS.Aloha.Selection.changeMarkupOnSelection(img);
-                    GENTICS.Utils.Dom.insertIntoDOM(
-                        img,
-                        GENTICS.Aloha.Selection.getRangeObject(),
-                        GENTICS.Aloha.activeEditable.obj);
-                };
-                reader.readAsDataURL(files[i]);
-            } //while
-
-            return false;
-        }, false);
-    });
 
 }
 
@@ -190,6 +147,25 @@ KaraCos.Plugin.subscribeEvents = function () {
 	var that = this;
 	
     // add the event handler for selection change
+	GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'dropFiles', function(event,objects) {	
+		// objects is an array of objects dropped by action with 2 attributes :
+		// - file : file Api browser object
+		// - img : jQuery img tag.
+		len = objects.length;
+		Ext.MessageBox.show({
+			buttons: Ext.MessageBox.OK
+			,icon: Ext.MessageBox.ERROR
+			,modal:false
+			,title:'Upload requested!'
+			,msg:"You've dropped "+len+" files !<BR><BR>These files will be uploaded."
+		});
+		// for each dropped file 
+		
+		while(--len >= 0) {
+		  image = objects[len].img; // the jquery object
+		  file = objects[len].file; // the file object
+		}
+	});
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'selectionChanged', function(event, rangeObject) {
     	//console.log(rangeObject);
     	if (that.add_attachment != null) {
