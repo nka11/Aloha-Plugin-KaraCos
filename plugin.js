@@ -143,28 +143,41 @@ KaraCos.Plugin.bindInteractions = function () {
 
 }
 
+
 KaraCos.Plugin.subscribeEvents = function () {
 	var that = this;
-	
+	KaraCos.Explorer.uploadWindow = new KaraCos.Explorer.Uploader({
+	    title: 'KaraCos Uploader',
+	    width:250,
+	    height:300,
+	    //border:false,
+	    plain:true,
+	    layout: 'border',
+	    closeAction: 'hide',
+	});
     // add the event handler for selection change
-	GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'dropFiles', function(event,objects) {	
+	GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'dropFileInEditable', function(event,data) {	
 		// objects is an array of objects dropped by action with 2 attributes :
 		// - file : file Api browser object
 		// - img : jQuery img tag.
-		len = objects.length;
-		Ext.MessageBox.show({
-			buttons: Ext.MessageBox.OK
-			,icon: Ext.MessageBox.ERROR
-			,modal:false
-			,title:'Upload requested!'
-			,msg:"You've dropped "+len+" files !<BR><BR>These files will be uploaded."
-		});
-		// for each dropped file 
-		
-		while(--len >= 0) {
-		  image = objects[len].img; // the jquery object
-		  file = objects[len].file; // the file object
-		}
+		console.log(data);
+		KaraCos.Explorer.uploadWindow.addFileUpload(data.file,that.settings['instance_url']);
+		/*
+		var reader = new FileReader();
+		var img = data.img;
+        reader.onloadend = function(readEvent) {
+        	img.attr('src', readEvent.target.result);
+            //GENTICS.Aloha.Selection.changeMarkupOnSelection(img);
+            GENTICS.Utils.Dom.insertIntoDOM(
+            		img,
+                GENTICS.Aloha.Selection.getRangeObject(),
+                GENTICS.Aloha.activeEditable.obj);
+            
+        };
+        reader.readAsDataURL(data.file);
+        */
+        KaraCos.Explorer.uploadWindow.show(KaraCos.Explorer.domainExplorer.explorer_button);
+		return false;
 	});
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'selectionChanged', function(event, rangeObject) {
     	//console.log(rangeObject);
