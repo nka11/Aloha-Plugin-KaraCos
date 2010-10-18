@@ -146,15 +146,6 @@ KaraCos.Plugin.bindInteractions = function () {
 
 KaraCos.Plugin.subscribeEvents = function () {
 	var that = this;
-	KaraCos.Explorer.uploadWindow = new KaraCos.Explorer.Uploader({
-	    title: 'KaraCos Uploader',
-	    width:250,
-	    height:300,
-	    //border:false,
-	    plain:true,
-	    layout: 'border',
-	    closeAction: 'hide',
-	});
     // add the event handler for selection change
 	GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'dropFileInEditable', function(event,data) {	
 		// objects is an array of objects dropped by action with 2 attributes :
