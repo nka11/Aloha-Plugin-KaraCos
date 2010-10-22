@@ -57,7 +57,7 @@ GENTICS.Aloha.Repositories.KaraCos.init = function() {
 				that.settings.data.push({ id: that.settings.data.length, name: k,
 					url:k, objectType:'website', parentId: root });
 			});
-		},
+		}
 	});
 	this.settings.data[0].parentId = '/';
     this.repositoryName = 'KaraCos';

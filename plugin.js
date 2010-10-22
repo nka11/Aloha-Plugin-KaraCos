@@ -62,7 +62,7 @@ KaraCos.Plugin.init=function(){
 				GENTICS.Aloha.Log.info(that,"successful result");
 				that.rsdata = data['data'];
 				}
-			},// success on get_user_actions_forms
+			}// success on get_user_actions_forms
 	}); // $.ajax for get_user_actions_forms
 	if (that.rsdata) {
 		len = that.rsdata.actions.length;
@@ -146,28 +146,16 @@ KaraCos.Plugin.bindInteractions = function () {
 
 KaraCos.Plugin.subscribeEvents = function () {
 	var that = this;
-    // add the event handler for selection change
+	GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'dropFileInPage', function(event,file) {	
+		KaraCos.Explorer.uploadWindow.addFileUpload(file,that.settings['instance_url']);
+		KaraCos.Explorer.uploadWindow.show(KaraCos.Explorer.domainExplorer.explorer_button);
+	});
 	GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'dropFileInEditable', function(event,data) {	
 		// objects is an array of objects dropped by action with 2 attributes :
 		// - file : file Api browser object
 		// - img : jQuery img tag.
-		console.log(data);
 		KaraCos.Explorer.uploadWindow.addFileUpload(data.file,that.settings['instance_url']);
-		/*
-		var reader = new FileReader();
-		var img = data.img;
-        reader.onloadend = function(readEvent) {
-        	img.attr('src', readEvent.target.result);
-            //GENTICS.Aloha.Selection.changeMarkupOnSelection(img);
-            GENTICS.Utils.Dom.insertIntoDOM(
-            		img,
-                GENTICS.Aloha.Selection.getRangeObject(),
-                GENTICS.Aloha.activeEditable.obj);
-            
-        };
-        reader.readAsDataURL(data.file);
-        */
-        KaraCos.Explorer.uploadWindow.show(KaraCos.Explorer.domainExplorer.explorer_button);
+		KaraCos.Explorer.uploadWindow.show(KaraCos.Explorer.domainExplorer.explorer_button);
 		return false;
 	});
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'selectionChanged', function(event, rangeObject) {
@@ -229,13 +217,13 @@ KaraCos.Plugin.save=function(){
 	    	data: $.toJSON({
 	    		'method' : that.settings['edit_content_action'],
 	    		'id' : 1,
-	    		'params' : that.pagedata,
+	    		'params' : that.pagedata
 	    	}),
 	    	context: document.body,
 	    	type: "POST",
 	        success: function(data) {
-			GENTICS.Aloha.Log.info(that,data);
-	    },});
+				GENTICS.Aloha.Log.info(that,data);
+	    	}});
 		GENTICS.Aloha.Log.info(that,that);
 	} catch(error) {
 		GENTICS.Aloha.Log.error(error);
