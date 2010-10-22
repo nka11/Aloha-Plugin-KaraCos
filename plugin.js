@@ -173,7 +173,7 @@ KaraCos.Plugin.subscribeEvents = function () {
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'selectionChanged', function(event, rangeObject) {
     	//console.log(rangeObject);
     	if (that.add_attachment != null) {
-	    	var foundImgMarkup = KaraCos.Img.findImgMarkup( rangeObject );
+	    	var foundImgMarkup = GENTICS.Aloha.Image.findImgMarkup( rangeObject );
 	        if ( foundImgMarkup != null ) {
 	        	//img found
 	            that.targetImg = foundImgMarkup;
