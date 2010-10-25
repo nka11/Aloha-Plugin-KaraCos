@@ -33,6 +33,7 @@ KaraCos.Plugin.init=function(){
 				id: 'show-btn',
 				})
 		); */
+	/*
 	KaraCos.Explorer.domainExplorer.explorer_button = new GENTICS.Aloha.ui.Button({
 		'iconClass': 'GENTICS_button karacos_explorer_icon',
 		'toggle' : false,
@@ -41,7 +42,8 @@ KaraCos.Plugin.init=function(){
 	}});
 	GENTICS.Aloha.Ribbon.addButton(KaraCos.Explorer.domainExplorer.explorer_button);
 	// When explorer is hidden, make the button clickable
-	KaraCos.Explorer.domainExplorer.on({
+	
+	 * KaraCos.Explorer.domainExplorer.on({
 		'hide': function(explorer) {
 			if (explorer.hidecmd && explorer.explorer_button.isPressed()) {
 				explorer.explorer_button.setPressed(false);
@@ -49,6 +51,7 @@ KaraCos.Plugin.init=function(){
 				}
 			} // on hide
 	});
+	 */
 	url_href = that.settings['instance_url'] + "/get_user_actions_forms";
 	$.ajax({ url: url_href,
     	dataType: "json",
