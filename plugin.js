@@ -78,11 +78,17 @@ KaraCos.Plugin.init=function(){
 				if (that.rsdata.actions[i].action == "_att") {
 					that._att = that.rsdata.actions[i];
 				}
-				/* 
-				 * if (that.rsdata.actions[i].label) {
+				if (that.rsdata.actions[i].label) {
 					var actionButton=new GENTICS.Aloha.ui.Button({label:that.rsdata.actions[i].label,
 						onclick:function(){ // When a button is clicked :
 						if (this.actiondata.form && this.actiondata.action != 'register') {
+							if ($('#dialog_window').get(0) == undefined) {
+								$('body').append('<div id="dialog_window"></div>');
+								$('#dialog_window').dialog({
+									autoOpen: false,
+									width: 400,
+								});
+							}
 							$.kc_write_kc_action(this.actiondata,$('#dialog_window'));
 							$('#dialog_window').dialog('open');	
 						} else {
@@ -95,7 +101,6 @@ KaraCos.Plugin.init=function(){
 					GENTICS.Aloha.Ribbon.addButton(actionButton);
 					// actionButton.show();
 				} 
-				*/
 			}
 			// GENTICS.Aloha.Ribbon.toolbar.render();
 			// GENTICS.Aloha.Ribbon.toolbar.show();
@@ -146,18 +151,6 @@ KaraCos.Plugin.bindInteractions = function () {
 
 KaraCos.Plugin.subscribeEvents = function () {
 	var that = this;
-	GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'dropFileInPage', function(event,file) {	
-		KaraCos.Explorer.uploadWindow.addFileUpload(file,that.settings['instance_url']);
-		KaraCos.Explorer.uploadWindow.show(KaraCos.Explorer.domainExplorer.explorer_button);
-	});
-	GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'dropFileInEditable', function(event,data) {	
-		// objects is an array of objects dropped by action with 2 attributes :
-		// - file : file Api browser object
-		// - img : jQuery img tag.
-		KaraCos.Explorer.uploadWindow.addFileUpload(data.file,that.settings['instance_url']);
-		KaraCos.Explorer.uploadWindow.show(KaraCos.Explorer.domainExplorer.explorer_button);
-		return false;
-	});
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'selectionChanged', function(event, rangeObject) {
     	//console.log(rangeObject);
     	if (that.add_attachment != null) {
