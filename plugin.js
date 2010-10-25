@@ -33,6 +33,7 @@ KaraCos.Plugin.init=function(){
 				id: 'show-btn',
 				})
 		); */
+	/*
 	KaraCos.Explorer.domainExplorer.explorer_button = new GENTICS.Aloha.ui.Button({
 		'iconClass': 'GENTICS_button karacos_explorer_icon',
 		'toggle' : false,
@@ -41,7 +42,8 @@ KaraCos.Plugin.init=function(){
 	}});
 	GENTICS.Aloha.Ribbon.addButton(KaraCos.Explorer.domainExplorer.explorer_button);
 	// When explorer is hidden, make the button clickable
-	KaraCos.Explorer.domainExplorer.on({
+	
+	 * KaraCos.Explorer.domainExplorer.on({
 		'hide': function(explorer) {
 			if (explorer.hidecmd && explorer.explorer_button.isPressed()) {
 				explorer.explorer_button.setPressed(false);
@@ -49,6 +51,7 @@ KaraCos.Plugin.init=function(){
 				}
 			} // on hide
 	});
+	 */
 	url_href = that.settings['instance_url'] + "/get_user_actions_forms";
 	$.ajax({ url: url_href,
     	dataType: "json",
@@ -78,11 +81,17 @@ KaraCos.Plugin.init=function(){
 				if (that.rsdata.actions[i].action == "_att") {
 					that._att = that.rsdata.actions[i];
 				}
-				/* 
-				 * if (that.rsdata.actions[i].label) {
+				if (that.rsdata.actions[i].label) {
 					var actionButton=new GENTICS.Aloha.ui.Button({label:that.rsdata.actions[i].label,
 						onclick:function(){ // When a button is clicked :
 						if (this.actiondata.form && this.actiondata.action != 'register') {
+							if ($('#dialog_window').get(0) == undefined) {
+								$('body').append('<div id="dialog_window"></div>');
+								$('#dialog_window').dialog({
+									autoOpen: false,
+									width: 400,
+								});
+							}
 							$.kc_write_kc_action(this.actiondata,$('#dialog_window'));
 							$('#dialog_window').dialog('open');	
 						} else {
@@ -95,7 +104,6 @@ KaraCos.Plugin.init=function(){
 					GENTICS.Aloha.Ribbon.addButton(actionButton);
 					// actionButton.show();
 				} 
-				*/
 			}
 			// GENTICS.Aloha.Ribbon.toolbar.render();
 			// GENTICS.Aloha.Ribbon.toolbar.show();
@@ -146,7 +154,6 @@ KaraCos.Plugin.bindInteractions = function () {
 
 KaraCos.Plugin.subscribeEvents = function () {
 	var that = this;
-	
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'selectionChanged', function(event, rangeObject) {
     	//console.log(rangeObject);
     	if (that.add_attachment != null) {
