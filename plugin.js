@@ -146,18 +146,7 @@ KaraCos.Plugin.bindInteractions = function () {
 
 KaraCos.Plugin.subscribeEvents = function () {
 	var that = this;
-	GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'dropFileInPage', function(event,file) {	
-		KaraCos.Explorer.uploadWindow.addFileUpload(file,that.settings['instance_url']);
-		KaraCos.Explorer.uploadWindow.show(KaraCos.Explorer.domainExplorer.explorer_button);
-	});
-	GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'dropFileInEditable', function(event,data) {	
-		// objects is an array of objects dropped by action with 2 attributes :
-		// - file : file Api browser object
-		// - img : jQuery img tag.
-		KaraCos.Explorer.uploadWindow.addFileUpload(data.file,that.settings['instance_url']);
-		KaraCos.Explorer.uploadWindow.show(KaraCos.Explorer.domainExplorer.explorer_button);
-		return false;
-	});
+	
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'selectionChanged', function(event, rangeObject) {
     	//console.log(rangeObject);
     	if (that.add_attachment != null) {
