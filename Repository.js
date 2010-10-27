@@ -103,7 +103,7 @@ GENTICS.Aloha.Repositories.KaraCos.query = function( p, callback) {
 			( !inFolderId || inFolderId == e.parentId ) 
 		);*/
 	});
-	
+	console.log(d);
 	callback.call( this, d);
 };
 
