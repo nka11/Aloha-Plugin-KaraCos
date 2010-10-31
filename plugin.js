@@ -1,10 +1,8 @@
 /*
 * Karacos plugin for aloha
 */
-if(typeof KaraCos=="undefined"||!KaraCos)
-    {
-	alert('KaraCos must be loaded');
-    }
+Ext.namespace("KaraCos");
+
 KaraCos.Plugin=new GENTICS.Aloha.Plugin("org.karacos.aloha.Plugin");
 /*if (typeof KaraCos_mode != "undefined" ||KaraCos_mode) {
 	if (KaraCos_mode != 'karacos_prod') {
@@ -26,32 +24,16 @@ KaraCos.Plugin.init=function(){
 	if (that.settings['instance_url'] == undefined) {
 		that.settings['instance_url'] = '';
 	}
-	
-	/*GENTICS.Aloha.Ribbon.addButton(
-			new GENTICS.Aloha.ui.Button({
-				'iconClass': 'GENTICS_button karacos_explorer_icon',
-				id: 'show-btn',
-				})
-		); */
-	/*
-	KaraCos.Explorer.domainExplorer.explorer_button = new GENTICS.Aloha.ui.Button({
+	this.browser = new GENTICS.Aloha.ui.Browser();
+
+	this.explorer_button = new GENTICS.Aloha.ui.Button({
 		'iconClass': 'GENTICS_button karacos_explorer_icon',
 		'toggle' : false,
 		onclick:function(){
-			KaraCos.Explorer.domainExplorer.show(this);
+			that.browser.show();
 	}});
-	GENTICS.Aloha.Ribbon.addButton(KaraCos.Explorer.domainExplorer.explorer_button);
+	GENTICS.Aloha.Ribbon.addButton(this.explorer_button);
 	// When explorer is hidden, make the button clickable
-	
-	 * KaraCos.Explorer.domainExplorer.on({
-		'hide': function(explorer) {
-			if (explorer.hidecmd && explorer.explorer_button.isPressed()) {
-				explorer.explorer_button.setPressed(false);
-				explorer.explorer_button.render();
-				}
-			} // on hide
-	});
-	 */
 	url_href = that.settings['instance_url'] + "/get_user_actions_forms";
 	$.ajax({ url: url_href,
     	dataType: "json",
@@ -67,6 +49,23 @@ KaraCos.Plugin.init=function(){
 				}
 			}// success on get_user_actions_forms
 	}); // $.ajax for get_user_actions_forms
+	this.drawButtons();
+	GENTICS.Aloha.Log.info(that,that);
+	that.bindInteractions();
+	that.subscribeEvents();
+   }; // END INIT
+
+KaraCos.Plugin.objectTypeFilter = [];
+
+
+KaraCos.Plugin.bindInteractions = function () {
+    var that = this;
+    
+
+};
+
+KaraCos.Plugin.drawButtons = function() {
+	var that = this;
 	if (that.rsdata) {
 		len = that.rsdata.actions.length;
 		for (var i=0 ; i<len; ++i) {
@@ -95,7 +94,7 @@ KaraCos.Plugin.init=function(){
 								width : 800,
 								height : 300,
 								modal:true,
-								closeAction : 'destroy',}).show();
+								closeAction : 'destroy'}).show();
 							
 							
 						} else {
@@ -107,7 +106,9 @@ KaraCos.Plugin.init=function(){
 					GENTICS.Aloha.Log.info(that,"processing action button creation " + that.rsdata.actions[i].label );
 					GENTICS.Aloha.Ribbon.addButton(actionButton);
 					// actionButton.show();
-				} 
+				} else {
+					
+				}
 			}
 			// GENTICS.Aloha.Ribbon.toolbar.render();
 			// GENTICS.Aloha.Ribbon.toolbar.show();
@@ -138,22 +139,8 @@ KaraCos.Plugin.init=function(){
 				// GENTICS.Aloha.Ribbon.toolbar.render();
 				// GENTICS.Aloha.Ribbon.toolbar.show();
 			} // if edit_page 
-		} // if data.status == "success"
-	GENTICS.Aloha.Log.info(that,that);
-	//console.log(that);
-	// $.ajax 
-	that.bindInteractions();
-	that.subscribeEvents();
-   }; // END INIT
-
-KaraCos.Plugin.objectTypeFilter = [];
-
-
-KaraCos.Plugin.bindInteractions = function () {
-    var that = this;
-    
-
-};
+		} // if that.rsdata
+}
 
 KaraCos.Plugin.subscribeEvents = function () {
 	var that = this;
