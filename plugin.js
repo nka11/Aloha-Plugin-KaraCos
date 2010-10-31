@@ -85,15 +85,19 @@ KaraCos.Plugin.init=function(){
 					var actionButton=new GENTICS.Aloha.ui.Button({label:that.rsdata.actions[i].label,
 						onclick:function(){ // When a button is clicked :
 						if (this.actiondata.form && this.actiondata.action != 'register') {
-							if ($('#dialog_window').get(0) == undefined) {
-								$('body').append('<div id="dialog_window"></div>');
-								$('#dialog_window').dialog({
-									autoOpen: false,
-									width: 400,
-								});
-							}
-							$.kc_write_kc_action(this.actiondata,$('#dialog_window'));
-							$('#dialog_window').dialog('open');	
+							new KaraCos.Action({'action': this.actiondata,
+								title : this.actiondata.action,
+								layout : 'vbox',
+								layoutConfig: {
+								    align : 'stretch',
+								    pack  : 'start',
+								},
+								width : 800,
+								height : 300,
+								modal:true,
+								closeAction : 'destroy',}).show();
+							
+							
 						} else {
 							document.location = this.instance_url + '/' + this.actiondata.action;
 						}
@@ -149,8 +153,7 @@ KaraCos.Plugin.bindInteractions = function () {
     var that = this;
     
 
-}
-
+};
 
 KaraCos.Plugin.subscribeEvents = function () {
 	var that = this;
