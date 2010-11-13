@@ -9,14 +9,15 @@ KaraCos.Plugin=new GENTICS.Aloha.Plugin("org.karacos.aloha.Plugin");
 		eu.iksproject.LoaderPlugin.loadAsset('org.karacos.aloha.Plugin', 'explorer', 'js');
 	}
 }*/
-eu.iksproject.LoaderPlugin.loadAsset('org.karacos.aloha.Plugin', 'style', 'css');
 KaraCos.Plugin.languages=["en","fr"];
 KaraCos.Plugin.config = ['img'];
 /*
  * Initalize plugin
  */
 KaraCos.Plugin.init=function(){
-	
+	stylePath = GENTICS_Aloha_base + '/plugins/org.karacos.aloha.Plugin/style.css';
+	jQuery('<link rel="stylesheet" />').attr('href', stylePath).appendTo('head');
+
 	this.pagedata = {}
     var that=this;
 	that.add_attachment = null;
@@ -68,6 +69,9 @@ KaraCos.Plugin.drawButtons = function() {
 	var that = this;
 	if (that.rsdata) {
 		len = that.rsdata.actions.length;
+		menu = new Ext.menu.Menu({
+			id: 'mainMenu'
+		});
 		for (var i=0 ; i<len; ++i) {
 			that.user_actions[i] = that.rsdata.actions[i].action;
 			if (that.rsdata.actions[i].action == that.settings['edit_content_action']) {
@@ -81,11 +85,15 @@ KaraCos.Plugin.drawButtons = function() {
 					that._att = that.rsdata.actions[i];
 				}
 				if (that.rsdata.actions[i].label) {
-					var actionButton=new GENTICS.Aloha.ui.Button({label:that.rsdata.actions[i].label,
-						onclick:function(){ // When a button is clicked :
+					var actionMenuItem=new Ext.menu.Item(
+						{text:that.rsdata.actions[i].label,
+						actiondata: that.rsdata.actions[i],
+						}); 
+					actionMenuItem.on('click', function(){ // When a button is clicked :
 						if (this.actiondata.form && this.actiondata.action != 'register') {
 							new KaraCos.Action({'action': this.actiondata,
 								title : this.actiondata.action,
+								instance_url: that.settings['instance_url'],
 								layout : 'vbox',
 								layoutConfig: {
 								    align : 'stretch',
@@ -100,19 +108,27 @@ KaraCos.Plugin.drawButtons = function() {
 						} else {
 							document.location = this.instance_url + '/' + this.actiondata.action;
 						}
-					}}); // actionbutton
-					actionButton.actiondata = that.rsdata.actions[i];
-					actionButton.instance_url = that.settings['instance_url'];
+					});
+					//); // actionbutton
+					actionMenuItem.actiondata = that.rsdata.actions[i];
+					actionMenuItem.instance_url = that.settings['instance_url'];
+					menu.addItem(actionMenuItem);
+//					menu.items.push(actionButton);
 					GENTICS.Aloha.Log.info(that,"processing action button creation " + that.rsdata.actions[i].label );
-					GENTICS.Aloha.Ribbon.addButton(actionButton);
+					//GENTICS.Aloha.Ribbon.addButton(actionButton);
 					// actionButton.show();
 				} else {
 					
 				}
 			}
-			// GENTICS.Aloha.Ribbon.toolbar.render();
-			// GENTICS.Aloha.Ribbon.toolbar.show();
 		} // for
+		menuButton = new Ext.Button({
+			menu:menu,
+			label:'KaraCos Menu'
+		});
+		GENTICS.Aloha.Ribbon.toolbar.insert(GENTICS.Aloha.Ribbon.toolbar.items.getCount() - 3,menuButton);
+//		GENTICS.Aloha.Ribbon.toolbar.render();
+//		GENTICS.Aloha.Ribbon.toolbar.show();
 		if (that.edit_page) {
 			GENTICS.Aloha.Log.info(that,that.edit_page_action);
 				len = that.edit_page_action.form.fields.length;
