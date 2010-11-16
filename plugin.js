@@ -84,6 +84,10 @@ KaraCos.Plugin.drawButtons = function() {
 				if (that.rsdata.actions[i].action == "_att") {
 					that._att = that.rsdata.actions[i];
 				}
+				if (that.rsdata.actions[i].action == "set_user_theme") {
+					that.set_user_theme = true;
+					that.set_user_theme_action = that.rsdata.actions[i];
+				}
 				if (that.rsdata.actions[i].label) {
 					var actionMenuItem=new Ext.menu.Item(
 						{text:that.rsdata.actions[i].label,
@@ -129,6 +133,61 @@ KaraCos.Plugin.drawButtons = function() {
 		GENTICS.Aloha.Ribbon.toolbar.insert(GENTICS.Aloha.Ribbon.toolbar.items.getCount() - 3,menuButton);
 //		GENTICS.Aloha.Ribbon.toolbar.render();
 //		GENTICS.Aloha.Ribbon.toolbar.show();
+		if (that.set_user_theme) {
+			var combodata = [];
+			var store = new Ext.data.ArrayStore({
+				fields: ['value']
+			});
+			field = that.set_user_theme_action.form.fields[0];
+			var fieldvalue = undefined;
+			if (field.value){
+				fieldvalue = field.value;
+			}
+			if (field.values) {
+				jQuery.each(field.values, function(k,v) {
+					//						store.loadData([v]);
+					combodata.push([v]);						
+				});
+			}
+			store.loadData(combodata);
+			userThemeButton = new Ext.form.ComboBox({
+				store: store,
+				name:field.name,
+				displayField:'value',
+				width: 135,
+				triggerAction: 'all',
+				mode: 'local',
+				//TODO i18n
+			    emptyText:'Select a theme',
+			    value: fieldvalue,
+			    forceSelection: true,
+			    //selectOnFocus:true
+			    listeners:{
+			         scope: this,
+			         'select': function(item) {
+			        	 $.ajax({ url: '/',
+			        	    	dataType: "json",
+			        	    	contentType: 'application/json',
+			        	    	type: "POST",
+			        	    	data: $.toJSON({
+			        	    		'method' : 'set_user_theme',
+			        	    		'id' : 1,
+			        	    		'params' : {'theme':item.value}
+			        	    	}),
+			        	    	context: document.body,
+			        	    	async: false, // plugin init should wait for success b4 continuing
+			        	        success: function(data) {
+			        	        	if (data['status'] == "success") {
+			        	        	document.location = document.URL;
+			        	        	}
+			        				}// success on set_user_theme
+			        		}); // $.ajax for get_user_actions_forms
+			         }
+			    }
+			});
+			GENTICS.Aloha.Ribbon.toolbar.insert(GENTICS.Aloha.Ribbon.toolbar.items.getCount() - 5,userThemeButton);
+			GENTICS.Aloha.Ribbon.toolbar.doLayout();
+		}
 		if (that.edit_page) {
 			GENTICS.Aloha.Log.info(that,that.edit_page_action);
 				len = that.edit_page_action.form.fields.length;
