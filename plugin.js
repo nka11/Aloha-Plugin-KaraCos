@@ -194,7 +194,7 @@ KaraCos.Plugin.drawInstanceMenu = function() {
 								width : 800,
 								height : 300,
 								modal:true,
-								closeAction : 'destroy'}).show().toFront();
+								closeAction : 'destroy'}).show().setZIndex(9999999999);
 							
 							
 						} else {
@@ -290,7 +290,24 @@ KaraCos.Plugin.srcChange = function () {
  * Edit more (window with additional info (which cannont be edited on page)
  */
 KaraCos.Plugin.editMore=function(){
-	   
+	simplified_action = this.edit_page_action;
+	if (this.edit_page_action.form.fields) {
+		this.items = [];
+		var arLen=this.edit_page_action.form.fields.length;
+		new KaraCos.Action({'action': this.edit_page_action,
+			title : this.edit_page_action.action,
+			instance_url: this.settings['instance_url'],
+			layout : 'vbox',
+			layoutConfig: {
+			    align : 'stretch',
+			    pack  : 'start',
+			},
+			width : 800,
+			height : 300,
+			modal:true,
+			autoScroll:true,
+			closeAction : 'destroy'}).show().setZIndex(9999999999);
+	}
    }; // END EDIT MORE
 
 /**
