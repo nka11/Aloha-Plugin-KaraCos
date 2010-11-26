@@ -194,7 +194,7 @@ KaraCos.Plugin.drawInstanceMenu = function() {
 								width : 800,
 								height : 300,
 								modal:true,
-								closeAction : 'destroy'}).show().setZIndex(9999999999);
+								closeAction : 'destroy'}).show();
 							
 							
 						} else {
