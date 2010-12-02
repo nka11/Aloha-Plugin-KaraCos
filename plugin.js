@@ -306,7 +306,7 @@ KaraCos.Plugin.editMore=function(){
 			height : 300,
 			modal:true,
 			autoScroll:true,
-			closeAction : 'destroy'}).show().setZIndex(9999999999);
+			closeAction : 'destroy'}).show();
 	}
    }; // END EDIT MORE
 
