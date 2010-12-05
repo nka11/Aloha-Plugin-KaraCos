@@ -194,6 +194,7 @@ KaraCos.Plugin.drawInstanceMenu = function() {
 								width : 800,
 								height : 300,
 								modal:true,
+								'autoScroll':true,
 								closeAction : 'destroy'}).show();
 							
 							
@@ -298,10 +299,10 @@ KaraCos.Plugin.editMore=function(){
 			title : this.edit_page_action.action,
 			instance_url: this.settings['instance_url'],
 			layout : 'vbox',
-			layoutConfig: {
-			    align : 'stretch',
-			    pack  : 'start',
-			},
+			//layoutConfig: {
+//			    align : 'stretch',
+//			    pack  : 'start',
+//			},
 			width : 800,
 			height : 300,
 			modal:true,
