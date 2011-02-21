@@ -255,6 +255,7 @@ KaraCos.Plugin.drawInstanceMenu = function() {
 				// GENTICS.Aloha.Ribbon.toolbar.show();
 			} // if edit_page 
 		} // if that.rsdata
+	GENTICS.Aloha.Ribbon.toolbar.doLayout();
 }
 
 KaraCos.Plugin.subscribeEvents = function () {
