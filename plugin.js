@@ -15,11 +15,44 @@ KaraCos.Plugin.config = ['img'];
  * Initalize plugin
  */
 KaraCos.Plugin.init=function(){
+	var that=this;
 	stylePath = GENTICS_Aloha_base + '/plugins/org.karacos.aloha.Plugin/style.css';
 	jQuery('head').append(jQuery('<link rel="stylesheet" />').attr('href', stylePath));
-
+	
+	// Link the VIE backbone
+	Backbone.sync = function(method, model) {
+        console.log(method, JSON.stringify(model));
+        var url = model.get('id').substring(9,model.get('id').length),
+			dataObject = model.toJSON();
+		delete dataObject.id;
+		$.ajax({ url: url,
+	    	dataType: "json",
+	    	contentType: 'application/json',
+	    	data: $.toJSON({
+	    		'method' : that.settings['edit_content_action'],
+	    		'id' : 1,
+	    		'params' : dataObject //that.pagedata
+	    	}),
+	    	context: document.body,
+	    	type: "POST",
+	        success: function(data) {
+				GENTICS.Aloha.Log.info(that,data);
+	    	}});
+		GENTICS.Aloha.Log.info(that,that);
+    };
+    
+	// read language prop into model
+	VIE.ContainerManager.findAdditionalInstanceProperties = function(element, modelInstance){
+		
+		modelInstance.set({lang: element.attr("lang")});
+	}
+    
+    // activates aloha for contents marked with RDFa
+	jQuery('[typeof][about]').each(function() {
+        jQuery(this).vieSemanticAloha();
+    });
+	
 	this.pagedata = {}
-    var that=this;
 	that.add_attachment = null;
 	// get user action forms and initialize actions for user
 	if (that.settings['instance_url'] == undefined) {
@@ -318,33 +351,37 @@ KaraCos.Plugin.editMore=function(){
 KaraCos.Plugin.save=function(){
 	try {
 		GENTICS.Aloha.Log.info("Starting KaraCos Save function");
-		config = this.settings['idfieldsref'];
-	    var content="";
-	    var that = this;
-		jQuery.each(GENTICS.Aloha.editables,
-		            function(index,editable){
-						that.pagedata[config[editable.getId()]] = editable.getContents();
-				        content=content+"Editable ID: "+config[editable.getId()]+"\nHTML code: "+editable.getContents()+"\n\n";
-			        });
-		url = that.settings['instance_url'];
-		if (url == "") {
-			url = "/";
-		}
-		$.ajax({ url: url,
-	    	dataType: "json",
-	    	contentType: 'application/json',
-	    	data: $.toJSON({
-	    		'method' : that.settings['edit_content_action'],
-	    		'id' : 1,
-	    		'params' : that.pagedata
-	    	}),
-	    	context: document.body,
-	    	type: "POST",
-	        success: function(data) {
-				GENTICS.Aloha.Log.info(that,data);
-	    	}});
-		GENTICS.Aloha.Log.info(that,that);
-	} catch(error) {
-		GENTICS.Aloha.Log.error(error);
-	}
-  };
+		jQuery.each(VIE.ContainerManager.instances, function(index, objectInstance) {
+            var modifiedProperties = {};
+
+            // Go through editables of the model instance
+            jQuery.each(objectInstance.editables, function(propertyName, editableInstance) {
+                if (!editableInstance.isModified()) {
+                    // This editable hasn't been modified, skip
+                    return true;
+                }
+                // Copy editable contents to the modifiedProperties object
+                modifiedProperties[propertyName] = editableInstance.getContents();
+            });
+
+            if (jQuery.isEmptyObject(modifiedProperties))
+            {
+                // No modified editables for this object, skip
+                return true;
+            }
+
+            // Set the modified properties to the model instance
+            objectInstance.save(modifiedProperties, {
+                success: function(savedModel, response) {
+                    alert(savedModel.id + " was saved, see JS console for details");
+                    jQuery.each(modifiedProperties, function(propertyName, propertyValue) {
+                        savedModel.editables[propertyName].setUnmodified();
+                    });
+                },
+                error: function(response) {
+                    console.log("Save failed");
+                }
+            });
+        });
+  } catch(error) {}
+}
