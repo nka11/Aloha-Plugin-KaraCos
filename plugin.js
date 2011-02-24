@@ -16,7 +16,7 @@ KaraCos.Plugin.config = ['img'];
  */
 KaraCos.Plugin.init=function(){
 	stylePath = GENTICS_Aloha_base + '/plugins/org.karacos.aloha.Plugin/style.css';
-	jQuery('<link rel="stylesheet" />').attr('href', stylePath).appendTo('head');
+	jQuery('head').append(jQuery('<link rel="stylesheet" />').attr('href', stylePath));
 
 	this.pagedata = {}
     var that=this;
