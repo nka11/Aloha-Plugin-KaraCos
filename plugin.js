@@ -25,6 +25,11 @@ KaraCos.Plugin.init=function(){
         var url = model.get('id').substring(9,model.get('id').length),
 			dataObject = model.toJSON();
 		delete dataObject.id;
+		for (var property in that.pagedata) {
+			if (!(property in dataObject)) {
+				dataObject[property] = that.pagedata[property];
+			}
+		}
 		$.ajax({ url: url,
 	    	dataType: "json",
 	    	contentType: 'application/json',
@@ -43,8 +48,9 @@ KaraCos.Plugin.init=function(){
     
 	// read language prop into model
 	VIE.ContainerManager.findAdditionalInstanceProperties = function(element, modelInstance){
-		
-		modelInstance.set({lang: element.attr("lang")});
+		if (element.attr("lang") != "") {
+			modelInstance.set({lang: element.attr("lang")});
+		}
 	}
     
     // activates aloha for contents marked with RDFa
